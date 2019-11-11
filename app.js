@@ -6,8 +6,9 @@ const sequelize = require("./db/db_connection");
 const bodyParser = require("body-parser");
 const cors = require("./Middlewares/cors");
 
+
 //Models
-const User = require("./models/User").User;
+// const User = require("./models/User").User;
 
 //Routes
 const routeUser=require("./routes/user");

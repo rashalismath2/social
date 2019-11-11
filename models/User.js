@@ -5,6 +5,7 @@ const Sequelize=require("../db/db_connection").sequelize;
 
 const User = Sequelize.define('tbluser', {
     // attributes
+   
     first_name: {
       type: sequelize.STRING
     },

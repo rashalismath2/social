@@ -83,7 +83,7 @@ module.exports.updateUser = function(req, res) {
         profile_pic_id:req.body.profile_pic_id
     }, {
         where: {
-          id: req.body.userId
+          id: req.params.id
         }
       })
     .then(user => {
@@ -111,7 +111,7 @@ module.exports.removeUser = function(req, res) {
 
     User.destroy({
         where: {
-          id: req.body.userId
+          id: req.params.id
         }
       })
     .then(() => {
