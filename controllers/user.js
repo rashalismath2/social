@@ -1,5 +1,7 @@
 const User=require("../models/User").User;
 
+
+
 module.exports.getAllUsers=function(req,res){
     User.findAll({
         attributes:['id','first_name','last_name','email','country','birth_date','createdAt',"gender"]
@@ -128,4 +130,32 @@ module.exports.removeUser = function(req, res) {
         })
         .status(500);
     });
+};
+
+
+module.exports.uploadUserProfilePic = function(req, res) {
+
+    res.json({
+      file:req.file
+    });
+
+    // User.destroy({
+    //     where: {
+    //       id: req.params.id
+    //     }
+    //   })
+    // .then(() => {
+    //   res
+    //     .json({
+    //       message: "user deleted successfully from the database"          
+    //     })
+    //     .status(200);
+    // })
+    // .catch(e => {
+    //   res
+    //     .json({
+    //       message: e.message.parent.sqlMessage
+    //     })
+    //     .status(500);
+    // });
 };

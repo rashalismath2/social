@@ -34,6 +34,7 @@ app.use(morgan("combined", { stream: accessLogStream }));
 app.use("/user",routeUser);
 
 
+
 //Error handling
 app.use((req, res, next) => {
   const error = new Error("route not found");
