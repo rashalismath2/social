@@ -6,12 +6,16 @@ const sequelize = require("./db/db_connection");
 const bodyParser = require("body-parser");
 const cors = require("./Middlewares/cors");
 
+const auth=require("./Middlewares/jwt");
+
 
 //Models
 // const User = require("./models/User").User;
 
 //Routes
 const routeUser=require("./routes/user");
+const routeAuth=require("./routes/auth");
+const routeMessage=require("./routes/message");
 
 dotenv.config();
 
@@ -31,7 +35,9 @@ const accessLogStream = require("./Middlewares/morgan").accessLogStream;
 app.use(morgan("combined", { stream: accessLogStream }));
 
 //Routes
-app.use("/user",routeUser);
+app.use("/auth",routeAuth);
+app.use("/user",auth,routeUser);
+app.use("/messages",auth,routeMessage);
 
 
 
