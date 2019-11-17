@@ -79,7 +79,8 @@ module.exports.login=function (req,res) {
                 message:'auth successful',
                 user:{
                   email:user[0].email,
-                  name:user[0].first_name+" "+user[0].last_name
+                  name:user[0].first_name+" "+user[0].last_name,
+                  id:user[0].id
                 },
                 api_token:jwt
             })
