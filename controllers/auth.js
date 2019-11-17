@@ -70,7 +70,9 @@ module.exports.login=function (req,res) {
           
           const jwt=jsontoken.sign({
             email:user[0].email,
-            id:user[0].id
+            id:user[0].id,
+            last_name:user[0].last_name,
+            first_name:user[0].first_name
           },process.env.JWT_PASSWORD,
           { //1 hour
             expiresIn:60*60*60})

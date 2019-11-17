@@ -77,9 +77,17 @@ module.exports.writeMessage = function(req, res) {
         createdAt:Date.now()
       }).then(message => {
         //dm-to
-        console.log(pusher);
+        //since this message adding to local variable in front end we have to add these extra info
+        var msg={
+          ...message.dataValues,
+          first_name:req.userFirstName,
+          last_name:req.userLastName,
+          user_id:req.body.msgTo
+        }
+
+        console.log(msg);
         pusher.trigger(`dm-${req.body.msgTo}`, "new-dm", {
-          "message": "hi"
+          "message": msg
         });    
         return res.status(200).json({
           message:message
