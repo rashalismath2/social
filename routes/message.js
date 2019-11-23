@@ -8,14 +8,5 @@ router.post("/",messageController.writeMessage);
 
 
 
-/**
- * get /messages
- * get /messages/:fromId or toId
- * post /messages/  :Toid
- * put /messages/    :msgId
- * delete /messages/  :msgId
- * 
- */
-
 
 module.exports=router;

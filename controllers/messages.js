@@ -77,7 +77,6 @@ module.exports.writeMessage = function(req, res) {
           user_id:req.body.msgTo
         }
 
-        console.log(msg);
         pusher.trigger(`dm-${req.body.msgTo}`, "new-dm", {
           "message": msg
         });    
