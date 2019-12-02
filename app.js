@@ -17,6 +17,8 @@ const routeUser=require("./routes/user");
 const routeAuth=require("./routes/auth");
 const routeMessage=require("./routes/message");
 const routeVideoChat=require("./routes/videochat");
+const routeFriends=require("./routes/friends");
+const routePusher=require("./routes/pusher");
 
 dotenv.config();
 
@@ -40,6 +42,8 @@ app.use("/auth",routeAuth);
 app.use("/user",auth,routeUser);
 app.use("/messages",auth,routeMessage);
 app.use("/videochat",auth,routeVideoChat);
+app.use("/friends",auth,routeFriends);
+app.use("/pusher",auth,routePusher);
 
 
 

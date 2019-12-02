@@ -14,9 +14,9 @@ module.exports=(req,res,next)=>{
         next();
     }
     catch(error){
-        return res.json({
+        return res.status(404).json({
             message:"authentication failed"
-        }).status(404);
+        });
     }
 
 }
