@@ -4,6 +4,9 @@ const jsontoken=require("jsonwebtoken");
 const dotenv = require("dotenv");
 
 
+const pusher=require("../Middlewares/pusher").pusher;
+
+
 dotenv.config();
 
 
@@ -77,12 +80,14 @@ module.exports.login=function (req,res) {
           { //1 hour
             expiresIn:60*60*60})
 
+
             res.status(200).json({
                 message:'auth successful',
                 user:{
                   email:user[0].email,
                   name:user[0].first_name+" "+user[0].last_name,
-                  id:user[0].id
+                  id:user[0].id,
+                  location_id:user[0].location_id
                 },
                 api_token:jwt
             })
