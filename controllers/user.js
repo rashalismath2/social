@@ -1,36 +1,7 @@
 const User = require("../models/User").User;
+const Location = require("../models/UserLocation").Location;
 
-
-module.exports.getAllUsers = function(req, res) {
-  User.findAll({
-    attributes: [
-      "id",
-      "first_name",
-      "last_name",
-      "email",
-      "country",
-      "birth_date",
-      "createdAt",
-      "gender"
-    ]
-  })
-    .then(users => {
-      res
-        .json({
-          message: "list of all user",
-          count: users.length,
-          data: users
-        })
-        .status(200);
-    })
-    .catch(e => {
-      res
-        .json({
-          message: e.message.parent.sqlMessage
-        })
-        .status(500);
-    });
-};
+const sequelize = require("../db/db_connection").sequelize;
 
 module.exports.getUser = function(req, res) {
   User.findAll({
@@ -48,12 +19,11 @@ module.exports.getUser = function(req, res) {
       "gender"
     ]
   })
-    .then(users => {
+    .then(user => {
       res
         .json({
-          message: "result user by id",
-          count: users.length,
-          data: users
+          message: "user by id",
+          data: user
         })
         .status(200);
     })
@@ -66,6 +36,80 @@ module.exports.getUser = function(req, res) {
     });
 };
 
+module.exports.getAllUsers = function(req, res) {
+  User.findAll({
+    attributes: [
+      "id",
+      "first_name",
+      "last_name",
+      "email",
+      "country",
+      "birth_date",
+      "createdAt",
+      "gender"
+    ]
+  })
+    .then(users => {
+      //TODO-better data structure for filter users. and get it by location
+      var query1 = `SELECT * from tblusers where id in(select requestTo from tblfriends where accepted='1' and requestFrom=${req.userId})`;
+      var query2 = `SELECT * from tblusers where id in(select requestFrom from tblfriends where accepted='1' and requestTo=${req.userId})`;
+      
+      sequelize
+        .query(query1, { type: sequelize.QueryTypes.SELECT })
+        .then(m1 => {
+          sequelize
+            .query(query2, { type: sequelize.QueryTypes.SELECT })
+            .then(m2 => {
+              var allfriends = m1.concat(m2);
+              var filtered = [];
+              for (var i = 0; i < users.length; i++) {
+                var foundUser = false;
+                for (var j = 0; j < allfriends.length; j++) {
+                  if (allfriends[j].id == users[i].id) {
+                    foundUser = true;
+                    break;
+                  }
+                }
+                if (!foundUser) {
+                  if(users[i].id!=req.userId){
+                    filtered.push(users[i]);
+                  }
+                }
+              }
+             
+              return res
+                .status(200)
+                .json({
+                  message: "result for all users",
+                  count: filtered.length,
+                  data: filtered
+                })
+               
+            })
+            .catch(e2 => {
+              return res
+                .json({
+                  message: e2
+                })
+                .status(500);
+            });
+        })
+        .catch(e1 => {
+          return res
+            .json({
+              message: e1
+            })
+            .status(500);
+        });
+    })
+    .catch(e => {
+      return res
+        .json({
+          message: e
+        })
+        .status(500);
+    });
+};
 
 module.exports.updateUser = function(req, res) {
   User.update(
@@ -128,11 +172,45 @@ module.exports.removeUser = function(req, res) {
 };
 
 module.exports.uploadUserProfilePic = function(req, res) {
-  res
-    .json({
-      message: "profile picture has been uploaded"
-    })
-    .status(200);
+  return res.status(200).json({
+    message: "profile picture has been uploaded"
+  });
 };
 
-
+module.exports.updatelocation = function(req, res) {
+  Location.create({
+    continentCode: req.body.continent_code,
+    contryCode: req.body.country_code,
+    countryName: req.body.country_name,
+    city: req.body.city,
+    ip: req.body.ip
+  })
+    .then(location => {
+      User.update(
+        {
+          location_id: location.id
+        },
+        {
+          where: {
+            id: req.userId
+          }
+        }
+      )
+        .then(() => {
+          return res.status(200).json({
+            message: "location updated",
+            location_id: location.id
+          });
+        })
+        .catch(e => {
+          return res.status(500).json({
+            message: e
+          });
+        });
+    })
+    .catch(e => {
+      return res.status(500).json({
+        message: e
+      });
+    });
+};

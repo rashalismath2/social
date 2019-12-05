@@ -16,6 +16,9 @@ const Friends = Sequelize.define('tblfriends', {
     },
     createdAt:{
         type:sequelize.DATE
+    },
+    accepted:{
+      type:sequelize.BOOLEAN
     }
 
   }, {

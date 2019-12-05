@@ -37,6 +37,9 @@ const User = Sequelize.define('tbluser', {
     email:{
       type:sequelize.STRING,
       allowNull: false
+    },
+    location_id:{
+      type:sequelize.NUMBER
     }
 
 
