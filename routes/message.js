@@ -4,7 +4,9 @@ const messageController=require("../controllers/messages");
 
 
 router.get("/",messageController.getAllMessages);
+router.get("/getconsmessages/:id",messageController.getConsMessages);
 router.post("/",messageController.writeMessage);
+router.post("/sendmessagetocons",messageController.writeMessageToCons);
 
 
 

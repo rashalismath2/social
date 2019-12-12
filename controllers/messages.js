@@ -2,6 +2,8 @@
 const sequelize=require("../db/db_connection").sequelize;
 
 const Messages = require("../models/PMMessages").Message;
+const ConsMessage = require("../models/consPMMessages").ConsMessage;
+const Consultant = require("../models/Consultant").Consultant;
 
 const Sequelize=require('sequelize');
 const Op = Sequelize.Op;
@@ -92,3 +94,111 @@ module.exports.writeMessage = function(req, res) {
   
 }
 
+module.exports.writeMessageToCons = function(req, res) {
+
+  ConsMessage.create({
+      cons_id:req.body.toId,
+      user_id:req.userId,
+      createdAt:new Date().toISOString(),
+      message:req.body.message,
+      fromId:req.userId,
+      toId:req.body.toId,
+
+      }).then(message => {
+        //TODO- pusher implement sending message
+        //dm-to
+        //since this message adding to local variable in front end we have to add these extra info
+        var msg={
+          ...message.dataValues,
+          first_name:req.userFirstName,
+          last_name:req.userLastName,
+          user_id:req.body.msgTo
+        }
+
+        // pusher.trigger(`dm-${req.body.msgTo}`, "new-dm", {
+        //   "message": msg
+        // });    
+        return res.status(200).json({
+          message:"message sent"
+        })
+      })
+      .catch(e=>{
+        return res.status(200).json({
+          message:e
+        })
+      });
+  
+}
+
+module.exports.getConsMessages=function(req,res){
+  
+  //TODO -better datastructuresz
+
+  ConsMessage.findAll({
+    where:{
+      cons_id:req.params.id,
+      user_id:req.userId
+    }
+  })
+  .then(rec=>{
+    Consultant.findAll({
+      attributes:["first_name","last_name"],
+      where:{
+        id:req.params.id
+      }
+    })
+      .then(cons=>{
+        var name=cons[0].first_name+" "+cons[0].last_name
+        var messages=[]
+        for(var i=0;i<rec.length;i++){
+            if(rec[i].fromId==req.userId){
+              var message={
+                id:rec[i].id,
+                cons_id:rec[i].cons_id,
+                user_id:rec[i].user_id,
+                createdAt:rec[i].createdAt,
+                updatedAt:rec[i].updatedAt,
+                message:rec[i].message,
+                fromId:rec[i].fromId,
+                toId:rec[i].toId,
+                sender:req.userFirstName+" "+req.userLirstName
+              }
+             messages.push(message)
+            }
+            else{
+                var message={
+                  id:rec[i].id,
+                  cons_id:rec[i].cons_id,
+                  user_id:rec[i].user_id,
+                  createdAt:rec[i].createdAt,
+                  updatedAt:rec[i].updatedAt,
+                  message:rec[i].message,
+                  fromId:rec[i].fromId,
+                  toId:rec[i].toId,
+                  sender:name
+  
+              }
+             messages.push(message)
+            }
+        }
+
+
+       return res.status(200).json({
+          messages:messages
+        })
+      })
+      .catch(e=>{
+        return res.status(200).json({
+          message:"retriving messages error"
+        })
+      })
+     
+  })
+  .catch(e=>{
+    return res.status(200).json({
+      message:"retriving messages error"
+    })
+  })
+
+
+}
