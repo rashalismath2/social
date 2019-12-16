@@ -105,19 +105,19 @@ module.exports.writeMessageToCons = function(req, res) {
       toId:req.body.toId,
 
       }).then(message => {
-        //TODO- pusher implement sending message
         //dm-to
         //since this message adding to local variable in front end we have to add these extra info
         var msg={
           ...message.dataValues,
           first_name:req.userFirstName,
           last_name:req.userLastName,
-          user_id:req.body.msgTo
+          user_id:req.body.msgTo,
+          sender:req.userFirstName+" "+req.userLastName
         }
 
-        // pusher.trigger(`dm-${req.body.msgTo}`, "new-dm", {
-        //   "message": msg
-        // });    
+        pusher.trigger(`private-toCons-${req.body.toId}`, "new-to-cons-dm", {
+          "message": msg
+        });    
         return res.status(200).json({
           message:"message sent"
         })

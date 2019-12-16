@@ -83,11 +83,10 @@ module.exports.writeMessage = function(req, res) {
         ...message.dataValues,
         first_name: req.userFirstName,
         last_name: req.userLastName,
-        user_id: req.body.msgTo
+        user_id: req.body.msgTo,
+        sender:req.userFirstName+" "+req.userLastName
       };
-
-      //TODO- is it same as channel
-      pusher.trigger(`dm-${req.body.msgTo}`, "new-dm", {
+      pusher.trigger(`private-fromCons-${req.body.msgTo}`, "new-cons-dm", {
         message: msg
       });
       return res.status(200).json({
