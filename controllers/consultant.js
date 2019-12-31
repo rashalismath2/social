@@ -45,45 +45,90 @@ module.exports.getAllConsultant = function(req, res) {
 module.exports.addNewClient = function(req, res) {
   //send instant notification to old consultant
   //send instant notification to new consultant
-  if(req.body.prev_cons_id){
-      
-      ConsMessage.create({
-        cons_id:req.body.prev_cons_id,
-        user_id:parseInt(req.userId),
-        fromId: req.userId,
-        toId: parseInt(req.body.prev_cons_id),
-        message: `User has left the conversation !`,
-        createdAt: Date.now(),
-        type:"End"
+if(req.body.prev_cons_id){
+  Customer.findAll({
+    where:{
+      user_id:req.userId,
+      consultant_id:req.body.prev_cons_id,
+      status:"active"
+    }
+  })
+  .then(record=>{
+    if(record.length!=0){
+      stripe.subscriptions.update(record[0].subscription_id, {cancel_at_period_end: true})
+      .then(m=>{
+          Customer.update({
+              status:"cancelled"
+          },
+          {
+            where:{
+              user_id:req.userId,
+              consultant_id:req.body.prev_cons_id
+            }
+          })
+          .then(updated=>{
+            createConsMessage(req,res)
+          })
+          .catch(e=>{
+            return res.status(500).json({message:"error in cancelling subscription",e:e})
+          })
       })
-        .then(message => {
-          //dm-to
-          //since this message adding to local variable in front end we have to add these extra info
-          var msg = {
-            ...message.dataValues,
-            first_name:req.userFirstName,
-            last_name:req.userLastName,
-            user_id:req.userId,
-            sender:req.userFirstName+" "+req.userLastName,
-          };
-          pusher.trigger(`private-toCons-${req.body.prev_cons_id}`, "new-to-cons-dm", {
-            message: msg
-          });
+      .catch(e=>{
+        return res.status(500).json({message:"error in cancelling subscription ",e:e})
+      })
+    }
+    else{
+      createConsMessage(req,res)
+    }
+  })
+  .catch(e=>{
+    console.log(e)
+      return res.status(500).json({message:"error in finding customer",e:e})
+  })
 
-          createNew(req,res)
-
-        })
-        .catch(e => {
-          return res.status(200).json({
-            message: e
-          });
-        });
-  }
-  else{
-    createNew(req,res)
-  }
-
+}
+else{
+  createNew(req,res)
+}
+ 
 };
+
+function createConsMessage(req,res){
+         ConsMessage.create({
+                cons_id:req.body.prev_cons_id,
+                user_id:parseInt(req.userId),
+                fromId: req.userId,
+                toId: parseInt(req.body.prev_cons_id),
+                message: `User has left the conversation !`,
+                createdAt: Date.now(),
+                type:"End"
+              })
+                .then(message => {
+                  //dm-to
+                  //since this message adding to local variable in front end we have to add these extra info
+                  var msg = {
+                    ...message.dataValues,
+                    first_name:req.userFirstName,
+                    last_name:req.userLastName,
+                    user_id:req.userId,
+                    sender:req.userFirstName+" "+req.userLastName,
+                  };
+                    pusher.trigger(`private-toCons-${req.body.prev_cons_id}`, "new-to-cons-dm", {
+                      message: msg
+                    });
+          
+                    createNew(req,res)
+          
+                  })
+                  .catch(e => {
+                    return res.status(200).json({
+                      message: e
+                    });
+                  });
+
+  
+}
+
 
 function createNew(req,res){
      

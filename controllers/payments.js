@@ -29,7 +29,6 @@ createCus(req).then(customer=>{
     })
     .then(c=>{
         if(c.length==0){
-            console.log("1")
             Customer.create({
                 customer_id:customer.id,
                 created_at:new Date().toISOString(),
@@ -76,7 +75,6 @@ createCus(req).then(customer=>{
             })
         }
         else{
-            console.log("2")
             Customer.update({
                 customer_id:customer.id,
                 updated_at:new Date().toISOString(),
@@ -204,9 +202,32 @@ module.exports.checkForTextSubs=(req,res)=>{
                 })
             }
             else{
-                return res.status(200).json({
-                    message:"subscription not found",
-                    status:"notfound"
+                Customer.findAll({
+                    where:{
+                        user_id:req.userId,
+                        consultant_id:req.body.consultant_id,
+                        type:"unlimited_text",
+                        status:"created"
+                    }
+                })
+                .then(data=>{
+                   if(data.length!=0){
+                        return res.status(200).json({
+                            message:"subscription has created",
+                            status:"created"
+                        })
+                   }else{
+                    return res.status(200).json({
+                        message:"subscription notfound",
+                        status:"notfound"
+                    })
+                   }
+                })
+                .catch(e=>{
+                    return res.status(500).json({
+                        message:"subscription not found",
+                        status:"notfound"
+                    }) 
                 })
             }
 

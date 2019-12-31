@@ -172,11 +172,18 @@ module.exports.getItemsById=(req,res)=>{
           }
         })
         .then(msg=>{
+            if(msg.length!=0){
+              return res.status(200).json({
+                questions:newData,
+                message:msg[0]
+              })
+            }else{
+              return res.status(200).json({
+                questions:newData,
+                message:[]
+              })
+            }
           
-          return res.status(200).json({
-            questions:newData,
-            message:msg[0]
-          })
         })
         .catch(e=>{
             return res.status(500).json({
@@ -199,7 +206,6 @@ module.exports.createMessage = (req, res) => {
     }
   })
     .then(rec => {
-      console.log(rec);
       if (rec.length==0) {
         StartMessage.create({
           message: req.body.payload,
