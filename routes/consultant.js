@@ -7,6 +7,7 @@ const upload=require("../Middlewares/multer").upload;
 router.get("/",consultantController.getAllConsultant);
 router.post("/addnewclient",consultantController.addNewClient);
 router.get("/myconsultant",consultantController.getMyConsultant);
+router.post("/leaveconsultant",consultantController.leaveconsultant);
 // router.get("/:id",consultantController.getUser);
 // router.post("/updatelocation",consultantController.updatelocation);
 

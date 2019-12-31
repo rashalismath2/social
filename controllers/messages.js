@@ -137,10 +137,13 @@ module.exports.getConsMessages=function(req,res){
   ConsMessage.findAll({
     where:{
       cons_id:req.params.id,
-      user_id:req.userId
+      user_id:req.userId,
+      type:null
     }
   })
   .then(rec=>{
+    //if messages ==0 send start conv messages
+    //TODO- send start messages
     Consultant.findAll({
       attributes:["first_name","last_name"],
       where:{

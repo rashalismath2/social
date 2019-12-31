@@ -14,7 +14,7 @@ const pusher = require("../Middlewares/pusher").pusher;
 
 module.exports.getAllMessages = function(req, res) {
     
-    var query="select u.email, u.first_name,u.last_name,d.createdAt,d.fromId,d.toId,d.message,d.user_id "+ 
+    var query="select u.email, u.first_name,u.last_name,d.type,d.createdAt,d.fromId,d.toId,d.message,d.user_id "+ 
     `from tblusers u inner join tblconsdmmessages d on d.user_id=u.id where d.cons_id=${req.userId} `+
     "order by user_id ASC, d.createdAt DESC"
 
@@ -38,6 +38,10 @@ module.exports.getAllMessages = function(req, res) {
                 if(!found){
                     var fName=result[i].first_name
                     var lName=result[i].last_name
+                    var end=false;
+                    if(result[i].type=="End"){
+                      end=true
+                    }
                     if(result[i].fromId==req.userId){
                         result[i].first_name=req.userFirstName;
                         result[i].last_name=req.userLastName;
@@ -46,6 +50,7 @@ module.exports.getAllMessages = function(req, res) {
                         user_id:result[i].user_id,
                         first_name:fName,
                         last_name:lName,
+                        type:end,
                         messages:Array(result[i])
                     })
                 }

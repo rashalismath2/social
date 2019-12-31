@@ -31,6 +31,9 @@ const ConsMessage = Sequelize.define('tblconsdmmessage', {
         type:sequelize.STRING,
         allowNull: false
     },
+    type:{
+        type:sequelize.STRING
+    },
 
   }, {
     timestamps: false

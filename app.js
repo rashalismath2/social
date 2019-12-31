@@ -21,6 +21,8 @@ const routeFriends=require("./routes/friends");
 const routeconsdmmessages=require("./routes/consdmmessages");
 const routePusher=require("./routes/pusher");
 const routeConsultant=require("./routes/consultant");
+const routeConsQuestions=require("./routes/consquestions");
+const routePayments=require("./routes/payment");
 
 dotenv.config();
 
@@ -39,6 +41,9 @@ app.use(bodyParser.json());
 const accessLogStream = require("./Middlewares/morgan").accessLogStream;
 app.use(morgan("combined", { stream: accessLogStream }));
 
+
+//TODO - route protection for differnt user levels
+
 //Routes
 app.use("/auth",routeAuth);
 app.use("/user",auth,routeUser);
@@ -48,6 +53,8 @@ app.use("/friends",auth,routeFriends);
 app.use("/pusher",auth,routePusher);
 app.use("/consmessages",auth,routeconsdmmessages);
 app.use("/consultants",auth,routeConsultant);
+app.use("/consultants/start",auth,routeConsQuestions);
+app.use("/payments",auth,routePayments);
 
 
 
