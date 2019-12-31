@@ -4,8 +4,7 @@ const paymentsController=require("../controllers/payments");
 
 
 router.post("/create-customer",paymentsController.createCustomer);
-
-
+router.post("/checkfor-textsubs",paymentsController.checkForTextSubs);
 
 
 
