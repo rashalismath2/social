@@ -23,6 +23,7 @@ const routePusher=require("./routes/pusher");
 const routeConsultant=require("./routes/consultant");
 const routeConsQuestions=require("./routes/consquestions");
 const routePayments=require("./routes/payment");
+const routeAppointments=require("./routes/appointments");
 
 dotenv.config();
 
@@ -55,6 +56,7 @@ app.use("/consmessages",auth,routeconsdmmessages);
 app.use("/consultants",auth,routeConsultant);
 app.use("/consultants/start",auth,routeConsQuestions);
 app.use("/payments",auth,routePayments);
+app.use("/appointments",auth,routeAppointments);
 
 
 
