@@ -16,7 +16,7 @@ const User = Sequelize.define('tbl_user', {
         type:sequelize.STRING,
         allowNull: false
     },
-    gender:{
+    code:{
         type:sequelize.STRING
     },
     city:{

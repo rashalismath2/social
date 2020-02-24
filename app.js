@@ -13,6 +13,7 @@ const cors = require("./Middlewares/cors");
 //Routes
 const routeUser=require("./routes/user");
 const routeAuth=require("./routes/auth");
+const routeQuestions=require("./routes/questions");
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use(morgan("combined", { stream: accessLogStream }));
 //Routes
 app.use("/user",authMiddleware,routeUser);
 app.use("/auth",routeAuth);
+app.use("/questions",authMiddleware,routeQuestions);
 
 
 //Error handling

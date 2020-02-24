@@ -86,7 +86,9 @@ module.exports.login=function (req,res) {
                     first_name:user[0].first_name,
                     last_name:user[0].last_name,
                     id:user[0].id,
-                    api_token:jwt
+                    api_token:jwt,
+                    code:user[0].code,
+                    profilepic_id:user[0].profilepic_id
                   },
                   
               })

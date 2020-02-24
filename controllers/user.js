@@ -2,7 +2,7 @@ const User=require("../models/User").User;
 
 module.exports.getAllUsers=function(req,res){
     User.findAll({
-        attributes:['id','first_name','last_name','city',"gender"]
+        attributes:['id','first_name','last_name','city',"code","profilepic_id"]
     })
     .then(users => {
         res.json({
@@ -25,7 +25,7 @@ module.exports.getUser=function(req,res){
         where:{
             id:req.params.id
         },
-        attributes:['id','first_name','last_name','city',"gender"]
+        attributes:['id','first_name','last_name','city',"code","profilepic_id"]
     })
     .then(users => {
         res.json({
@@ -77,7 +77,6 @@ module.exports.updateUser = function(req, res) {
         last_name:req.body.last_name,
         birth_date:req.body.birth_date,
         email:req.body.email,
-        gender:req.body.gender,
         password:req.body.password,
         profilepic_id:req.body.profile_pic_id
     }, {
