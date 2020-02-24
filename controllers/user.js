@@ -5,7 +5,7 @@ module.exports.getAllUsers=function(req,res){
         attributes:['id','first_name','last_name','city',"code","profilepic_id"]
     })
     .then(users => {
-        res.json({
+        return res.json({
             message:"list of all user",
             count:users.length,
             data:users
@@ -13,7 +13,7 @@ module.exports.getAllUsers=function(req,res){
     
     })
     .catch(e=>{
-        res.json({
+        return res.json({
             message:e.message.parent.sqlMessage
         })
         .status(500)
@@ -28,7 +28,7 @@ module.exports.getUser=function(req,res){
         attributes:['id','first_name','last_name','city',"code","profilepic_id"]
     })
     .then(users => {
-        res.json({
+        return res.json({
             message:"result user by id",
             count:users.length,
             data:users,
@@ -36,7 +36,7 @@ module.exports.getUser=function(req,res){
     
     })
     .catch(e=>{
-        res.json({
+        return res.json({
             message:e.message.parent.sqlMessage
         })
         .status(500)
@@ -51,7 +51,7 @@ module.exports.createUser = function(req, res) {
        password: req.body.password,
      })
     .then(user => {
-      res
+      return res
         .json({
           message: "user successfuly added to the database",
           user:{
@@ -62,7 +62,7 @@ module.exports.createUser = function(req, res) {
         .status(200);
     })
     .catch(e => {
-      res
+      return res
         .json({
           message: e.message.parent.sqlMessage
         })
@@ -75,30 +75,29 @@ module.exports.updateUser = function(req, res) {
     User.update({ 
         first_name:req.body.first_name,
         last_name:req.body.last_name,
-        birth_date:req.body.birth_date,
         email:req.body.email,
-        password:req.body.password,
-        profilepic_id:req.body.profile_pic_id
+        tbl_consultants_id:req.body.consultant_id,
+        profilepic_id:req.body.profile_pic_id,
+        code:req.body.code,
     }, {
         where: {
           id: req.params.id
         }
       })
     .then(user => {
-      res
+      return res
         .json({
           message: "user updated successfully in the database",
           user:{
               id:user.id,
-              email:user.email
           }
         })
         .status(200);
     })
     .catch(e => {
-      res
+      return res
         .json({
-          message: e.message.parent.sqlMessage
+          message: e.message
         })
         .status(500);
     });
@@ -113,14 +112,14 @@ module.exports.removeUser = function(req, res) {
         }
       })
     .then(() => {
-      res
+      return res
         .json({
           message: "user deleted successfully from the database"          
         })
         .status(200);
     })
     .catch(e => {
-      res
+     return res
         .json({
           message: e.message.parent.sqlMessage
         })

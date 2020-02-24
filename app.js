@@ -14,6 +14,7 @@ const cors = require("./Middlewares/cors");
 const routeUser=require("./routes/user");
 const routeAuth=require("./routes/auth");
 const routeQuestions=require("./routes/questions");
+const routeConsultant=require("./routes/consultant");
 
 dotenv.config();
 
@@ -26,7 +27,7 @@ const authMiddleware=require("./Middlewares/jwt");
 cors.cors(app);
 
 //body parser
-app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 //Logging requests to the logs
@@ -37,6 +38,7 @@ app.use(morgan("combined", { stream: accessLogStream }));
 app.use("/user",authMiddleware,routeUser);
 app.use("/auth",routeAuth);
 app.use("/questions",authMiddleware,routeQuestions);
+app.use("/consultants",authMiddleware,routeConsultant);
 
 
 //Error handling

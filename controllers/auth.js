@@ -1,4 +1,5 @@
 const User = require("../models/User").User;
+const UserLanguage = require("../models/UserLangs").UserLanguage;
 const bcrypt = require("bcrypt");
 const jsontoken=require("jsonwebtoken");
 const dotenv = require("dotenv");
@@ -80,18 +81,34 @@ module.exports.login=function (req,res) {
             { //1 hour
               expiresIn:60*60*60})
     
-              res.status(200).json({
+
+              UserLanguage.findAll({
+                where:{
+                  tbl_users_id:user[0].id,
+                  selected:1
+                }
+              })
+              .then(lang=>{
+                return res.status(200).json({
                   message:'auth successful',
                   user:{
                     first_name:user[0].first_name,
                     last_name:user[0].last_name,
                     id:user[0].id,
+                    selected_language:lang[0].language,
                     api_token:jwt,
                     code:user[0].code,
                     profilepic_id:user[0].profilepic_id
-                  },
+                  }
                   
               })
+              })
+              .catch(e=>{
+                  return  res.status(409).json({
+                    message:"auth failed"
+                  })
+              })
+
           }
         })
       })

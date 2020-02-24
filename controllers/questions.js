@@ -1,18 +1,19 @@
 const Questions=require("../models/Questions").Questions;
+const { Op } = require("sequelize");
 
 module.exports.getAllQuestions=function(req,res){
-
+    
     if(req.query.code){
         Questions.findAll({
-            attributes:['id','category','description','question']
-        },{
-            where:{
-                category:{
-                    $like:req.query.code
-                }
+        attributes:['id','category','description','question'],
+        where:{
+            category:{
+                [Op.substring]:req.query.code
             }
+        }
         })
         .then(questions => {
+
             return res.json({
                 questions:questions
             }).status(200);
