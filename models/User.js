@@ -3,7 +3,7 @@ const Sequelize=require("../db/db_connection").sequelize;
 
 
 
-const User = Sequelize.define('tbluser', {
+const User = Sequelize.define('tbl_user', {
     // attributes
    
     first_name: {
@@ -19,29 +19,19 @@ const User = Sequelize.define('tbluser', {
     gender:{
         type:sequelize.STRING
     },
-    birth_date:{
-        type:sequelize.DATEONLY
-    },
-    createdAt:{
-        type:sequelize.DATE
-    },
-    updatedAt:{
-        type:sequelize.DATE
-    },
-    country:{
+    city:{
         type:sequelize.STRING
     },
-    profile_pic_id:{
-        type:sequelize.STRING
+    profilepic_id:{
+        type:sequelize.TEXT
     },
     email:{
       type:sequelize.STRING,
       allowNull: false
     }
 
-
   }, {
-    // options
+    timestamps:false
   });
 
 

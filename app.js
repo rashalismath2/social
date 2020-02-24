@@ -12,12 +12,14 @@ const cors = require("./Middlewares/cors");
 
 //Routes
 const routeUser=require("./routes/user");
+const routeAuth=require("./routes/auth");
 
 dotenv.config();
 
 const app = express();
 
 //////Middlewares
+const authMiddleware=require("./Middlewares/jwt");
 
 //Cors
 cors.cors(app);
@@ -31,7 +33,8 @@ const accessLogStream = require("./Middlewares/morgan").accessLogStream;
 app.use(morgan("combined", { stream: accessLogStream }));
 
 //Routes
-app.use("/user",routeUser);
+app.use("/user",authMiddleware,routeUser);
+app.use("/auth",routeAuth);
 
 
 //Error handling
